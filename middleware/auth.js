@@ -1,6 +1,14 @@
+const jwt = require("jsonwebtoken")
+const { secret } = require("../config")
+// 用户认证
 const auth = async (ctx, next) => {
-    if (ctx.url !== '/users') {
-        ctx.throw(401)
+    const { authorization = '' } = ctx.header
+    const token = authorization.replace("Bearer ","")
+    try {
+        const user = jwt.verify(token, secret)
+        ctx.state.user = user
+    } catch(err) {
+        ctx.throw(401, err.message)
     }
     await next()
 }
