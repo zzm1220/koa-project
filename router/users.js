@@ -6,20 +6,40 @@ const userRouter = new Router({
 
 const auth = require('../middleware/auth')
 const checkOwner = require('../middleware/checkOwner')
-
+const checkUserExists = require('../middleware/checkUserExists')
+const checkTopicExists = require('../middleware/checkTopicExists')
 const { 
     find, 
     findById, 
     create, 
     update, 
     deleteUser,
-    login
+    login,
+    listFollowing,
+    follow,
+    unfollow,
+    listFollowers,
+    followTopic,
+    unfollowTopic,
+    listFollowTopics
 } = require('../controller/users')
 // 查找用户列表
 userRouter.get('/', find)
 
 // 查找特定用户
 userRouter.get('/:id', findById)
+
+// 查找用户关注
+userRouter.get('/:id/following', listFollowing)
+
+// 关注某人
+userRouter.put('/following/:id', auth, checkUserExists, follow)
+
+// 取消关注某人
+userRouter.delete('/following/:id', auth, checkUserExists, unfollow)
+
+// 获取某人粉丝列表
+userRouter.get('/:id/followers', listFollowers)
 
 // 新建用户
 userRouter.post('/', create)
@@ -33,6 +53,14 @@ userRouter.delete('/:id', auth, checkOwner, deleteUser)
 // 用户登录
 userRouter.post('/login', login)
 
+// 用户关注话题
+userRouter.put('/topics/:id', auth, checkTopicExists, followTopic)
+
+// 取消关注话题
+userRouter.delete('/topics/:id', auth, checkTopicExists, unfollowTopic)
+
+// 获取用户关注的话题
+userRouter.get("/:id/listFollowTopics", listFollowTopics)
 module.exports = app => {
     app.use(userRouter.routes())
     app.use(userRouter.allowedMethods())

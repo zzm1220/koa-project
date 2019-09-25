@@ -33,26 +33,50 @@ const userSchema = new Schema({
     },
     locations: {
         type: [{
-            type: String
-        }]
+            type: Schema.Types.ObjectId,
+            ref: 'Topic'
+        }],
+        select: false
     },
     business: {
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: 'Topic',
+        select: false
     },
     employments: {
         type: [{
-            compony: {type: String},
-            job: {type: String}
-        }]
+            compony: {type: Schema.Types.ObjectId, ref: 'Topic'},
+            job: {type: Schema.Types.ObjectId, ref: 'Topic'}
+        }],
+        select: false
     },
     educations: {
         type: [{
-            school: {type: String},
-            major: {type: String},
+            school: {type: Schema.Types.ObjectId, ref: 'Topic'},
+            major: {type: Schema.Types.ObjectId, ref: 'Topic'},
             diploma: {type: Number, enum: [1, 2, 3, 4, 5]},
             entrnce_year: {type: Number},
             graduaction_year: {type: Number}
-        }]
+        }],
+        select: false
+    },
+    following: {
+        type: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        ],
+        select: false
+    },
+    followingTopics: {
+        type: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Topic'
+            }
+        ],
+        select: false
     }
 })
 
