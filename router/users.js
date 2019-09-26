@@ -8,6 +8,7 @@ const auth = require('../middleware/auth')
 const checkOwner = require('../middleware/checkOwner')
 const checkUserExists = require('../middleware/checkUserExists')
 const checkTopicExists = require('../middleware/checkTopicExists')
+const { checkAnswerExists }  = require('../middleware/checkAnswerExists')
 const { 
     find, 
     findById, 
@@ -21,7 +22,14 @@ const {
     listFollowers,
     followTopic,
     unfollowTopic,
-    listFollowTopics
+    listFollowTopics,
+    listQuestions,
+    listLikingAnswers,
+    likeAnswer,
+    unlikeAnswer,
+    listDislikingAnswers,
+    dislikeAnswer,
+    undislikeAnswer
 } = require('../controller/users')
 // 查找用户列表
 userRouter.get('/', find)
@@ -61,6 +69,28 @@ userRouter.delete('/topics/:id', auth, checkTopicExists, unfollowTopic)
 
 // 获取用户关注的话题
 userRouter.get("/:id/listFollowTopics", listFollowTopics)
+
+// 获取用户的提问
+userRouter.get("/:id/questions", listQuestions)
+
+// 获取用户喜欢的答案列表
+userRouter.get("/:id/likeAnswers", listLikingAnswers)
+
+// 用户对答案点赞
+userRouter.put("/likeAnswers/:id", auth, checkAnswerExists, likeAnswer, undislikeAnswer)
+
+// 用户对答案取消点赞
+userRouter.delete("/likeAnswers/:id", auth, checkAnswerExists, unlikeAnswer)
+
+//获取用户踩的答案列表
+userRouter.get("/:id/dislikeAnswers", listDislikingAnswers)
+
+//用户对答案进行踩
+userRouter.put("/dislikeAnswers/:id", auth, checkAnswerExists, dislikeAnswer, unlikeAnswer)
+
+//用户对答案取消踩
+userRouter.delete("/dislikeAnswers/:id", auth, checkAnswerExists, undislikeAnswer)
+
 module.exports = app => {
     app.use(userRouter.routes())
     app.use(userRouter.allowedMethods())

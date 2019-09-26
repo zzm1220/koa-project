@@ -10,7 +10,8 @@ const {
     findById,
     create,
     update,
-    listTopicFollowers
+    listTopicFollowers,
+    listQuestions
 } = require("../controller/topics")
 
 router.get('/', find)
@@ -18,6 +19,7 @@ router.get('/:id', findById)
 router.post('/', auth, create)
 router.patch('/:id', auth, checkTopicExists, update)
 router.get('/:id/followers', checkTopicExists, listTopicFollowers)
+router.get('/:id/questions', checkTopicExists, listQuestions)
 
 module.exports = app => {
     app.use(router.routes())
