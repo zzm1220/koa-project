@@ -29,7 +29,10 @@ const {
     unlikeAnswer,
     listDislikingAnswers,
     dislikeAnswer,
-    undislikeAnswer
+    undislikeAnswer,
+    listCollectingAnswer,
+    collectAnswer,
+    unCollectAnswer
 } = require('../controller/users')
 // 查找用户列表
 userRouter.get('/', find)
@@ -90,6 +93,15 @@ userRouter.put("/dislikeAnswers/:id", auth, checkAnswerExists, dislikeAnswer, un
 
 //用户对答案取消踩
 userRouter.delete("/dislikeAnswers/:id", auth, checkAnswerExists, undislikeAnswer)
+
+//展示用户收藏答案
+userRouter.get("/:id/collectingAnswer", listCollectingAnswer) 
+
+// 用户收藏答案
+userRouter.put("/collectingAnswer/:id", auth, checkAnswerExists, collectAnswer)
+
+// 用户取消收藏答案
+userRouter.delete("/collectingAnswer/:id", auth, checkAnswerExists, unCollectAnswer)
 
 module.exports = app => {
     app.use(userRouter.routes())

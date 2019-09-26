@@ -282,6 +282,38 @@ class UserCtl {
         }
         ctx.status = 204
     }
+    // 展示用户收藏的答案列表
+    async listCollectingAnswer(ctx, next) {
+        const id = ctx.params.id // 用户id
+        const user = await User.findById(id).select("+collectingAnswers").populate("collectingAnswers")
+        if (!user) ctx.throw(404, '用户不存在')
+        ctx.body = user.collectingAnswers
+    }
+    // 用户收藏答案
+    async collectAnswer(ctx, next) {
+        const id = ctx.params.id // 答案id
+        const user = ctx.state.user
+        const me = await User.findById(user._id).select("+collectingAnswers")
+        const collectingAnswerArr = me.collectingAnswers.map(id => id.toString())
+        if(!collectingAnswerArr.includes(id)) {
+            me.collectingAnswers.push(id)
+            me.save()
+        }
+        ctx.status = 204
+    }
+    // 用户取消收藏答案
+    async unCollectAnswer(ctx, next) {
+        const id = ctx.params.id // 答案id
+        const user = ctx.state.user // 用户
+        const me = await User.findById(user._id).select("+collectingAnswers")
+        const collectingAnswerArr = me.collectingAnswers.map(id => id.toString())
+        const index = collectingAnswerArr.indexOf(id)
+        if (index > -1) {
+            me.collectingAnswers.splice(index, 1)
+            me.save()
+        }
+        ctx.status = 204
+    }
 }
 
 module.exports = new UserCtl()
